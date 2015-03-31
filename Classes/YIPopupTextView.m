@@ -22,8 +22,8 @@
 #define TEXT_SIZE           (IS_IPAD ? 32 : 16)
 #define COUNT_SIZE          (IS_IPAD ? 32 : 16)
 #define COUNT_MARGIN        (IS_IPAD ? 20 : 10)
-#define CLOSE_IMAGE_WIDTH   (IS_IPAD ? 60 : 30)
-#define CLOSE_BUTTON_WIDTH  (IS_IPAD ? 88 : 44)
+#define CLOSE_IMAGE_WIDTH   (IS_IPAD ? 80 : 40)
+#define CLOSE_BUTTON_WIDTH  (IS_IPAD ? 100 : 50)
 
 #define ANIMATION_DURATION  0.25
 
@@ -187,6 +187,14 @@ typedef enum {
     return [self initWithPlaceHolder:placeHolder maxCount:maxCount buttonStyle:YIPopupTextViewButtonStyleRightCancel];
 }
 
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    if (self.tag == 999) {
+        return (action == @selector(copy:) || action == @selector(selectAll:));
+    }
+
+    return [super canPerformAction:action withSender:sender];
+}
+
 - (id)initWithPlaceHolder:(NSString*)placeHolder
                  maxCount:(NSUInteger)maxCount
               buttonStyle:(YIPopupTextViewButtonStyle)buttonStyle
@@ -243,13 +251,10 @@ typedef enum {
         if (maxCount > 0) {
             _countLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             _countLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-#if (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0)
-			_countLabel.textAlignment = UITextAlignmentRight;
-#else
-			_countLabel.textAlignment = NSTextAlignmentRight;
-#endif
+            _countLabel.textAlignment = NSTextAlignmentRight;
             _countLabel.backgroundColor = [UIColor clearColor];
-            _countLabel.textColor = [UIColor lightGrayColor];
+//            _countLabel.textColor = [UIColor lightGrayColor];
+            _countLabel.textColor = [UIColor colorWithWhite:0.3 alpha:0.5];
             _countLabel.font = [UIFont boldSystemFontOfSize:COUNT_SIZE];
             [_popupView addSubview:_countLabel];
         }
@@ -609,7 +614,7 @@ typedef enum {
 {
     if ([notification object] != self) return;
     
-    [self updateCount];
+//    [self updateCount];
 }
 
 #pragma mark -
@@ -618,16 +623,17 @@ typedef enum {
 
 - (void)updateCount
 {
-    NSUInteger textCount = [self.text length];
-    _countLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)_maxCount-textCount];
+//    NSUInteger textCount = [self.text length];
+//    _countLabel.text = [NSString stringWithFormat:@"%lu", _maxCount-textCount];
+    _countLabel.text = _bottomPlaceholder;
     
-    if (_maxCount > 0 && textCount > _maxCount) {
-        _acceptButton.enabled = NO;
-        _countLabel.textColor = [UIColor redColor];
-    } else {
-        _acceptButton.enabled = YES;
-        _countLabel.textColor = [UIColor lightGrayColor];
-    }
+//    if (_maxCount > 0 && textCount > _maxCount) {
+//        _acceptButton.enabled = NO;
+//        _countLabel.textColor = [UIColor redColor];
+//    } else {
+//        _acceptButton.enabled = YES;
+//        _countLabel.textColor = [UIColor lightGrayColor];
+//    }
     
     [_countLabel sizeToFit];
     _countLabel.frame = CGRectMake(_popupView.bounds.size.width-_textViewInsets.right-_countLabel.frame.size.width-COUNT_MARGIN,
@@ -642,23 +648,12 @@ typedef enum {
 
 - (void)handleCloseButton:(UIButton*)sender
 {
-    [self _handleButtonWithCancelled:YES];
+    [self dismissWithCancelled:YES];
 }
 
 - (void)handleAcceptButton:(UIButton*)sender
 {
-    [self _handleButtonWithCancelled:NO];
-}
-
-- (void)_handleButtonWithCancelled:(BOOL)cancelled
-{
-    if ([self.delegate respondsToSelector:@selector(popupTextView:shouldDismissWithText:cancelled:)]) {
-        if (![self.delegate popupTextView:self shouldDismissWithText:self.text cancelled:cancelled]) {
-            return;
-        }
-    }
-    
-    [self dismissWithCancelled:cancelled];
+    [self dismissWithCancelled:NO];
 }
 
 #pragma mark
