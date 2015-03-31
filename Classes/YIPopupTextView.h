@@ -25,7 +25,6 @@ typedef NS_ENUM(NSInteger, YIPopupTextViewButtonStyle) {
 
 @protocol YIPopupTextViewDelegate <UITextViewDelegate>
 @optional
-- (BOOL)popupTextView:(YIPopupTextView *)textView shouldDismissWithText:(NSString *)text cancelled:(BOOL)cancelled;
 - (void)popupTextView:(YIPopupTextView*)textView willDismissWithText:(NSString*)text cancelled:(BOOL)cancelled;
 - (void)popupTextView:(YIPopupTextView*)textView didDismissWithText:(NSString*)text cancelled:(BOOL)cancelled;
 
@@ -39,6 +38,10 @@ typedef NS_ENUM(NSInteger, YIPopupTextViewButtonStyle) {
 @property (nonatomic, strong) UIColor* outerBackgroundColor;    // default = black opaque
 
 @property (nonatomic, assign) BOOL caretShiftGestureEnabled;    // default = NO
+
+@property (nonatomic, strong) NSString* bottomPlaceholder;
+
+
 
 @property (nonatomic) CGFloat topUIBarMargin;       // set statusBar+navBar height for iOS7 fullscreen size manually
 @property (nonatomic) CGFloat bottomUIBarMargin;    // set tabBar+toolbar height for iOS7 fullscreen size manually
