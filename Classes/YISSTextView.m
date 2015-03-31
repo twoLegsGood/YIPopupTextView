@@ -80,18 +80,16 @@
 	
 	if (_shouldDrawPlaceholder) {
 		[_placeholderColor set];
-		CGRect drawInRect = CGRectMake(8.0f, 8.0f, self.frame.size.width - 16.0f, self.frame.size.height - 16.0f);
-#if (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_7_0)
-		[_placeholder drawInRect:drawInRect withFont:self.font];
-#else
-		NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-		paragraphStyle.alignment = NSTextAlignmentLeft;
-		NSDictionary *attributes = @{ NSFontAttributeName: self.font,
-                                      NSForegroundColorAttributeName: self.placeholderColor,
-                                      NSParagraphStyleAttributeName: paragraphStyle };
-		[_placeholder drawInRect:drawInRect withAttributes:attributes];
-#endif
+        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        /// Set line break mode
+        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+        /// Set text alignment
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        NSDictionary *attributes = @{ NSFontAttributeName: [UIFont boldSystemFontOfSize:28.0f],
+                                      NSForegroundColorAttributeName: [UIColor whiteColor],
+                                      NSParagraphStyleAttributeName: paragraphStyle
+                                      };
+		[_placeholder drawInRect:CGRectMake(8.0f, 8.0f, self.frame.size.width - 16.0f, self.frame.size.height - 16.0f) withAttributes:attributes];
 	}
 }
 
